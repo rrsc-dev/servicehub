@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Edit, Trash2, Info } from 'lucide-vue-next';
+import ToggleButton from '@/Components/ToggleButton.vue';
 
 const props = defineProps({
     companies: Array
@@ -11,6 +12,12 @@ const deleteCompany = (id) => {
     if (confirm('Tem certeza que deseja excluir esta empresa?')) {
         router.delete(route('companies.destroy', id));
     }
+};
+
+const toggleStatus = (id) => {
+    router.patch(route('companies.toggle-status', id), {}, {
+        preserveScroll: true
+    });
 };
 
 </script>
@@ -37,7 +44,7 @@ const deleteCompany = (id) => {
                         <thead class="bg-gray-50">
                           <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Documento</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">CNPJ</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Status</th>
                             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Ações</th>
                           </tr>
@@ -51,7 +58,11 @@ const deleteCompany = (id) => {
                               {{ company.document }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                              {{ company.is_active }}
+                              <ToggleButton 
+                                class="mx-auto" 
+                                :modelValue="company.is_active" 
+                                @update:modelValue="toggleStatus(company.id)" 
+                              />
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4 text-center">
                               <Link :href="route('companies.show', company.id)" class="inline-flex text-blue-600 hover:text-blue-900" title="Ver detalhes">
