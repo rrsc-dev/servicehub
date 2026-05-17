@@ -60,4 +60,23 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function addExtra(Request $request) {
+        $validated = $request->validate([
+            'phone' => ['nullable', 'string', 'max:20'],
+            'email' => ['nullable', 'string', 'email', 'max:255'],
+            'role'  => ['required', 'string', 'max:50'],
+        ]);
+
+        $request->user()->profile()->updateOrCreate(
+            ['user_id' => $request->user()->id],
+            [
+                'phone' => $validated['phone'] ?? null,
+                'email' => $validated['email'] ?? null,
+                'role'  => $validated['role'] ?? 'user',
+            ]
+        );
+
+        return redirect()->route('profile.edit')->with('status', 'additional-profile-updated');
+    }
 }
