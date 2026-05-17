@@ -5,6 +5,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { ArrowLeft } from 'lucide-vue-next';
 
 const form = useForm({
     name: '',
@@ -27,9 +28,14 @@ const submit = () => {
 
     <AuthenticatedLayout>
         <template #header>
+          <div class="flex items-center space-x-4">
+            <Link :href="route('companies.index')" class="text-gray-600 hover:text-gray-900 transition-colors">
+              <ArrowLeft class="w-6 h-6" />
+            </Link>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Cadastrar Nova Empresa
+              Cadastrar Nova Empresa
             </h2>
+          </div>
         </template>
 
         <div class="py-12">

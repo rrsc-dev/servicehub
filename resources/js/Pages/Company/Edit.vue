@@ -1,10 +1,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, Link } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { ArrowLeft } from 'lucide-vue-next';
 
 const props = defineProps({
     company: Object
@@ -27,10 +28,16 @@ const submit = () => {
     <Head title="Editar Empresa" />
 
     <AuthenticatedLayout>
+        
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Editar Empresa: {{ company.name }}
-            </h2>
+            <div class="flex items-center space-x-4">
+                <Link :href="route('companies.index')" class="text-gray-600 hover:text-gray-900 transition-colors">
+                    <ArrowLeft class="w-6 h-6" />
+                </Link>
+                <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                    Editar Empresa: {{ company.name }}
+                </h2>
+            </div>
         </template>
 
         <div class="py-12">
