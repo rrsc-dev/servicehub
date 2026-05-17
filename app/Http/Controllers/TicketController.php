@@ -76,8 +76,7 @@ class TicketController extends Controller
             ProcessTicketAttachment::dispatch($detail);
         }
 
-        return redirect()->route('tickets.show', $ticket->id)
-                         ->with('message', 'Ticket aberto com sucesso! O anexo foi enviado para a fila.');
+        return redirect()->route('tickets.show', $ticket->id)->with('message', 'Ticket aberto com sucesso! O anexo foi enviado para a fila.');
     }
 
     /**
@@ -98,8 +97,11 @@ class TicketController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Ticket $ticket)
+    public function edit($id)
     {
+        $ticket = Ticket::findOrFail($id);
+        abort_if(auth()->id() != $ticket->created_by && auth()->id() != $ticket->user_id, 403, 'Ação não autorizada.');
+
         return Inertia::render('Ticket/Edit', [
             'ticket' => $ticket->load('detail'),
             'projects' => Project::orderBy('name')->get(['id', 'name']),
@@ -110,8 +112,11 @@ class TicketController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Ticket $ticket)
+    public function update(Request $request, $id)
     {
+        $ticket = Ticket::findOrFail($id);
+
+        abort_if(auth()->id() != $ticket->created_by && auth()->id() != $ticket->user_id, 403, 'Ação não autorizada.');
 
         $validated = $request->validate([
             'project_id' => 'required|exists:projects,id',
@@ -142,8 +147,10 @@ class TicketController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ticket $ticket)
-    {        
+    public function destroy($id)
+    {
+        $ticket = Ticket::findOrFail($id);
+        abort_if(auth()->id() != $ticket->created_by && auth()->id() != $ticket->user_id, 403, 'Ação não autorizada.');
         $ticket->delete();
 
         return redirect()->route('tickets.index')->with('message', 'Ticket excluído com sucesso!');
