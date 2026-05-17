@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Company;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Project>
@@ -17,8 +19,21 @@ class ProjectFactory extends Factory
      */
     public function definition(): array
     {
+        $name = fake()->unique()->sentence(3);
+
         return [
-            //
+            'company_id' => Company::factory(),
+            'name' => $name,
+            'slug' => Str::slug($name . '-' . fake()->unique()->numberBetween(1, 9999)),
+            'status' => fake()->randomElement([
+                1, // ativo
+                2, // pausado
+                3, // finalizado
+                4, // cancelado
+            ]),
+            'description' => fake()->paragraph(),
+            'start_date' => fake()->dateTimeBetween('-1 year', 'now'),
+            'end_date' => fake()->optional()->dateTimeBetween('now', '+1 year'),
         ];
     }
 }
