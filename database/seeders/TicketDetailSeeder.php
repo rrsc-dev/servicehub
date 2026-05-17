@@ -13,6 +13,6 @@ class TicketDetailSeeder extends Seeder
      */
     public function run(): void
     {
-        TicketDetail::factory(100)->create();
+        TicketDetail::factory(20)->create();
     }
 }

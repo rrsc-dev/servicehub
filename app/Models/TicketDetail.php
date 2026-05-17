@@ -15,4 +15,11 @@ class TicketDetail extends Model
     public function ticket() {
         return $this->belongsTo(Ticket::class);
     }
+
+    protected function casts(): array
+    {
+        return [
+            'report' => 'array',
+        ];
+    }
 }

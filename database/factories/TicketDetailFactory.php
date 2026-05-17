@@ -12,7 +12,7 @@ class TicketDetailFactory extends Factory
     public function definition(): array
     {
         return [
-            'ticket_id' => Ticket::factory(),
+            'ticket_id' => Ticket::inRandomOrder()->first()?->id ?? Ticket::factory(),
             'description' => fake()->paragraph(),
             'attachment_path' => fake()->optional()->filePath(),
             'report' => [
