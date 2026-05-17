@@ -9,4 +9,6 @@ class UserProfile extends Model
 {
     /** @use HasFactory<\Database\Factories\UserProfileFactory> */
     use HasFactory;
+
+    protected $fillable = ['user_id', 'phone', 'email', 'role'];
 }

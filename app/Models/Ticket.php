@@ -9,4 +9,6 @@ class Ticket extends Model
 {
     /** @use HasFactory<\Database\Factories\TicketFactory> */
     use HasFactory;
+
+    protected $fillable = ['project_id', 'user_id', 'title', 'status'];
 }

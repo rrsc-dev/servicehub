@@ -9,4 +9,6 @@ class Project extends Model
 {
     /** @use HasFactory<\Database\Factories\ProjectFactory> */
     use HasFactory;
+
+    protected $fillable = ['company_id', 'name', 'status', 'description', 'start_date', 'end_date'];
 }
