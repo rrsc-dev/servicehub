@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { Edit, Trash2, Eye } from 'lucide-vue-next';
 
-const props = defineProps({
+defineProps({
     tickets: Array
 });
 
@@ -11,12 +11,12 @@ const page = usePage();
 const currentUserId = page.props.auth.user.id;
 
 const canEditOrDelete = (ticket) => {
-    return currentUserId === ticket.created_by || currentUserId === ticket.user_id;
+    return currentUserId == ticket.created_by || currentUserId == ticket.user_id;
 };
 
 const deleteTicket = (ticket) => {
     if (confirm(`Deseja realmente excluir o ticket #${ticket.id} permanentemente?`)) {
-      router.delete(route('tickets.destroy', ticket.id), { preserveScroll: true });
+        router.delete(route('tickets.destroy', ticket.id), { preserveScroll: true });
     }
 };
 </script>
@@ -28,7 +28,7 @@ const deleteTicket = (ticket) => {
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                  Todos os Tickets do Sistema
+                    Todos os Tickets do Sistema
                 </h2>
                 <Link :href="route('tickets.create')" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
                     Novo Ticket
@@ -86,7 +86,9 @@ const deleteTicket = (ticket) => {
                                 </td>
                             </tr>
                             <tr v-if="tickets.length === 0">
-                                <td colspan="5" class="px-6 py-10 text-center text-gray-500">Nenhum ticket encontrado no sistema.</td>
+                                <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-500">
+                                    Nenhum ticket encontrado no sistema.
+                                </td>
                             </tr>
                         </tbody>
                     </table>
