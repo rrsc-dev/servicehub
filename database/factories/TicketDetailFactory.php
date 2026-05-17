@@ -13,9 +13,8 @@ class TicketDetailFactory extends Factory
     {
         return [
             'ticket_id' => Ticket::inRandomOrder()->first()?->id ?? Ticket::factory(),
-            'description' => fake()->paragraph(),
             'attachment_path' => fake()->optional()->filePath(),
-            'report' => [
+            'more_information' => [
                 'browser' => fake()->randomElement([
                     'Chrome',
                     'Firefox',

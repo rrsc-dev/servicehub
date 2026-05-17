@@ -23,13 +23,9 @@ class TicketFactory extends Factory
             'project_id' => Project::inRandomOrder()->first()?->id ?? Project::factory(),
             'title' => fake()->sentence(5),
             'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
-            'status' => fake()->randomElement([
-                1, // aberto
-                2, // em andamento
-                3, // aguardando
-                4, // finalizado
-                5, // cancelado
-            ]),
+            'description' => fake()->optional()->paragraph(),
+            'status' => fake()->randomElement([0, 1]),
+            'created_by' => User::inRandomOrder()->first()?->id ?? User::factory(),
         ];
     }
 }
