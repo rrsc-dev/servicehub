@@ -53,7 +53,7 @@ const submit = () => {
                         </div>
 
                         <div>
-                          <InputLabel for="document" value="Documento (CNPJ/CPF)" class="mt-2"/>
+                          <InputLabel for="document" value="CNPJ" class="mt-2"/>
                           <TextInput 
                              id="document" v-model="form.document" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
                           <InputError class="text-red-600 text-sm mt-2" :message="form.errors.document" />

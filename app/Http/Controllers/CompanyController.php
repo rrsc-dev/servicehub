@@ -55,7 +55,13 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
-        //
+        $company->load(['projects' => function ($query) {
+            $query->withCount('tickets');
+        }]);
+
+        return Inertia::render('Company/Show', [
+            'company' => $company
+        ]);
     }
 
     /**
@@ -96,5 +102,13 @@ class CompanyController extends Controller
         $company->delete();
 
         return redirect()->route('companies.index');
+    }
+
+    public function toggleStatus(Company $company)
+    {
+        $company->is_active = !$company->is_active;
+        $company->save();
+
+        return redirect()->back();
     }
 }
