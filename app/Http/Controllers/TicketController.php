@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreTicketRequest;
-use App\Http\Requests\UpdateTicketRequest;
+use App\Http\Requests\Request;
+use Inertia\Inertia;
 use App\Models\Ticket;
+use Illuminate\Support\Str;
 
 class TicketController extends Controller
 {
@@ -13,7 +14,11 @@ class TicketController extends Controller
      */
     public function index()
     {
-        //
+        $tickets = Ticket::orderBy('name')->get();
+        
+        return Inertia::render('Ticket/Index', [
+            'tickets' => $tickets
+        ]);
     }
 
     /**
@@ -21,7 +26,7 @@ class TicketController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Ticket/Create');
     }
 
     /**
@@ -45,7 +50,9 @@ class TicketController extends Controller
      */
     public function edit(Ticket $ticket)
     {
-        //
+        return Inertia::render('Ticket/Edit', [
+            'ticket' => $ticket
+        ]);
     }
 
     /**
@@ -61,6 +68,8 @@ class TicketController extends Controller
      */
     public function destroy(Ticket $ticket)
     {
-        //
+        $ticket->delete();
+
+        return redirect()->route('tickets.index');
     }
 }

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProjectRequest;
-use App\Http\Requests\UpdateProjectRequest;
+use App\Http\Requests\Request;
+use Inertia\Inertia;
 use App\Models\Project;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -13,7 +14,11 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        //
+        $projects = Project::orderBy('name')->get();
+
+        return Inertia::render('Project/Index', [
+            'projects' => $projects
+        ]);
     }
 
     /**
@@ -21,7 +26,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Project/Create');
     }
 
     /**
@@ -45,7 +50,9 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        return Inertia::render('Project/Edit', [
+            'project' => $project
+        ]);
     }
 
     /**
@@ -61,6 +68,8 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        $project->delete();
+
+        return redirect()->route('projects.index');
     }
 }
