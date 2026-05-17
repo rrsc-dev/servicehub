@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Request;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Project;
+use App\Models\Company;
 use Illuminate\Support\Str;
 
 class ProjectController extends Controller
@@ -40,15 +41,31 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Project/Create');
+        $companies = Company::orderBy('name')->get(['id', 'name']);
+
+        return Inertia::render('Project/Create', [
+            'companies' => $companies
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProjectRequest $request)
+    public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'company_id' => 'required|exists:companies,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+        ]);
+
+        $validated['slug'] = Str::slug($validated['name']);
+
+        Project::create($validated);
+
+        return redirect()->route('projects.index')->with('message', 'Projeto cadastrado com sucesso!');
     }
 
     /**
@@ -56,7 +73,11 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+        $project->load(['company', 'tickets']);
+
+        return Inertia::render('Project/Show', [
+            'project' => $project
+        ]);
     }
 
     /**
@@ -64,17 +85,32 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
+        $companies = Company::orderBy('name')->get(['id', 'name']);
+
         return Inertia::render('Project/Edit', [
-            'project' => $project
+            'project' => $project,
+            'companies' => $companies
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(Request $request, Project $project)
     {
-        //
+        $validated = $request->validate([
+            'company_id' => 'required|exists:companies,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+        ]);
+
+        $validated['slug'] = Str::slug($validated['name']);
+
+        $project->update($validated);
+
+        return redirect()->back()->with('success', 'Projeto atualizado com sucesso!');
     }
 
     /**

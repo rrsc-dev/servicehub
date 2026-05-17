@@ -30,14 +30,16 @@ const deleteProject = (project) => {
             </div>
         </template>
 
-        <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-6">
+        <div class="py-12">
+            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-6">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Projeto</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empresa</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Tickets</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Empresa</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Tickets</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -45,20 +47,19 @@ const deleteProject = (project) => {
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     {{ project.name }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                    <Link :href="route('companies.show', project.company.id)" class="inline-flex items-center space-x-1.5 text-indigo-600 hover:underline">
-                                        <Building class="w-4 h-4 text-gray-400" />
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    <Link :href="route('companies.show', project.company.id)" class="text-indigo-600 hover:underline">
                                         <span>{{ project.company.name }}</span>
                                     </Link>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-center">
                                     <span class="bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded-full font-semibold">
                                         {{ project.tickets_count }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4 text-center">
-                                    <Link :href="route('projects.show', project.id)" class="inline-flex text-blue-600 hover:text-blue-900" title="Ver Tickets">
-                                        <Eye class="w-5 h-5" />
+                                    <Link :href="route('projects.show', project.id)" class="inline-flex text-blue-600 hover:text-blue-900 " title="Ver Tickets">
+                                        <Info class="w-5 h-5" />
                                     </Link>
                                     <Link :href="route('projects.edit', project.id)" class="inline-flex text-indigo-600 hover:text-indigo-900" title="Editar projeto">
                                         <Edit class="w-5 h-5" />
@@ -71,6 +72,7 @@ const deleteProject = (project) => {
                         </tbody>
                     </table>
                 </div>
-            
+            </div>
+        </div>
     </AuthenticatedLayout>
 </template>
