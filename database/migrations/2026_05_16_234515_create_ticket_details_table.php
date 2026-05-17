@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('ticket_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('ticket_id')->constrained()->cascadeOnDelete();
+            $table->string('description')->nullable();
+            $table->string('attachment_path')->nullable();
+            $table->json('report')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
         });
     }
