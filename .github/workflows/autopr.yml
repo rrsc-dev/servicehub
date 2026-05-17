@@ -1,0 +1,51 @@
+name: Build e Pull Request Automático
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build-and-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependências do Backend (Composer)
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Instalar e compilar Frontend (NPM / Vite)
+        run: |
+          npm ci
+          npm run build
+
+      - name: Criar Pull Request via GitHub CLI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_EXISTS=$(gh pr list --head ${{ github.ref_name }} --json url --jq 'length')
+
+          if [ "$PR_EXISTS" -eq "0" ]; then
+            gh pr create -B main -H ${{ github.ref_name }} \
+              --title "Automated PR: ${{ github.ref_name }}" \
+              --body "Pull Request criado automaticamente. OK Dependências instaladas e Build do Vue/Vite concluído com sucesso."
+            echo "Pull Request criado com sucesso!"
+          else
+            echo "Já existe um Pull Request aberto para esta branch."
+          fi
