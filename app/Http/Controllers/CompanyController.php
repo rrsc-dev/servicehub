@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\Company;
+use Inertia\Inertia;
 
 class CompanyController extends Controller
 {
@@ -13,7 +14,11 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        //
+        $companies = Company::orderBy('name')->get();
+        
+        return Inertia::render('Company/Index', [
+            'companies' => $companies
+        ]);
     }
 
     /**
