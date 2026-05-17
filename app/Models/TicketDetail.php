@@ -12,5 +12,7 @@ class TicketDetail extends Model
 
     protected $fillable = ['ticket_id', 'description', 'attachment_path', 'report', 'start_date', 'end_date'];
 
-    
+    public function ticket() {
+        return $this->belongsTo(Ticket::class);
+    }
 }

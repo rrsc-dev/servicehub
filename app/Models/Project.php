@@ -11,4 +11,12 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = ['company_id', 'name', 'status', 'description', 'start_date', 'end_date'];
+
+    public function company() {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function tickets() {
+        return $this->hasMany(Ticket::class);
+    }
 }

@@ -11,4 +11,8 @@ class Company extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'slug', 'is_active','document','email','phone','address'];
+
+    public function projects() {
+        return $this->hasMany(Project::class);
+    }
 }
