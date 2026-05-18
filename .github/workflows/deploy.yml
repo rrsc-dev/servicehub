@@ -1,0 +1,64 @@
+name: Pipeline CI/CD Completa
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  testes-e-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Configurar PHP 8.5
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          
+      - name: Instalar Dependências do Composer
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        
+      - name: Preparar ambiente de testes
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          
+      - name: Executar Suíte de Testes (PHPUnit)
+        run: php artisan test
+
+  deploy-producao:
+    needs: testes-e-build # Só faz deploy se os testes passarem
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy no Servidor via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            # 1. Navega até a pasta do projeto (Substitua pelo nome real da sua pasta)
+            cd /home/ubuntu/servicehub
+            
+            # 2. Atualiza o repositório
+            git pull origin main
+            
+            # 3. Sobe/Atualiza a infraestrutura Docker
+            docker compose -f docker-compose.prod.yml up -d --build
+            
+            # 4. Instala pacotes do Backend (Otimizado para Produção, sem pacotes de dev)
+            # Obs: Substitua 'app' pelo nome do seu serviço PHP no docker-compose.prod.yml
+            docker compose -f docker-compose.prod.yml exec -T app composer install --optimize-autoloader --no-dev
+            
+            # 5. Instala pacotes do Frontend e compila o Vue/Inertia
+            docker compose -f docker-compose.prod.yml exec -T app npm ci
+            docker compose -f docker-compose.prod.yml exec -T app npm run build
+            
+            # 6. Roda as migrations (A flag --force é obrigatória em produção)
+            docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force
+            
+            # 7. Limpa e reconstrói o cache de rotas, views e configurações (Performance)
+            docker compose -f docker-compose.prod.yml exec -T app php artisan optimize
+            
+            # 8. Reinicia os workers da fila para aplicar o novo código do Job aos anexos
+            docker compose -f docker-compose.prod.yml exec -T app php artisan queue:restart
