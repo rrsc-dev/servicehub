@@ -32,6 +32,8 @@ jobs:
         run: |
           cp .env.example .env
           php artisan key:generate
+          sed -i 's/DB_CONNECTION=mysql/DB_CONNECTION=sqlite/' .env
+          touch database/database.sqlite
           
       - name: Executar Suíte de Testes (PHPUnit)
         run: php artisan test
