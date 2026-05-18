@@ -2,6 +2,8 @@
  
 O **ServiceHub** é uma aplicação web para gestão de ordens de serviço. Usuários autenticados podem cadastrar empresas, organizar projetos por empresa e abrir tickets por projeto. Cada ticket possui um detalhe técnico associado e suporta upload de anexos que são processados de forma assíncrona via fila.
 
+Link para acesso no projeto hospedado na AWS: 18.222.83.43
+
 ## Funcionalidades
  
 **Autenticação**
