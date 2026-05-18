@@ -10,10 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Configurar PHP 8.5
+      - name: Configurar PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: '8.3'
+          
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Compilar Frontend (Vite)
+        run: |
+          npm ci
+          npm run build
           
       - name: Instalar Dependências do Composer
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
@@ -27,7 +37,7 @@ jobs:
         run: php artisan test
 
   deploy-producao:
-    needs: testes-e-build # Só faz deploy se os testes passarem
+    needs: testes-e-build
     runs-on: ubuntu-latest
     steps:
       - name: Deploy no Servidor via SSH
