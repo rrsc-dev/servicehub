@@ -84,7 +84,8 @@ Abra o `.env` e ajuste as variáveis abaixo:
 APP_NAME=ServiceHub
 APP_ENV=local
 APP_DEBUG=true
-APP_URL=http://localhost
+APP_URL=http://localhost:8080
+APP_PORT=8080
  
 DB_CONNECTION=mysql
 DB_HOST=mysql
@@ -151,7 +152,7 @@ Execute os comandos **nesta ordem** para iniciar o ambiente completo:
 ./vendor/bin/sail artisan queue:work
 ```
  
-> ✅ A aplicação estará disponível em **http://localhost**
+> ✅ A aplicação estará disponível em **http://localhost:8080**
  
 ---
  
