@@ -123,10 +123,16 @@ class TicketController extends Controller
             'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'attachment' => 'nullable|file|mimes:json,txt|max:4096',
             'status' => 'required|integer',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
         ]);
+
+        $path = null;
+        if ($request->hasFile('attachment')) {
+            $path = $request->file('attachment')->store('ticket_attachments');
+        }
 
         $ticket->update([
             'project_id' => $validated['project_id'],
@@ -140,6 +146,10 @@ class TicketController extends Controller
             'start_date' => $validated['start_date'] ?? null,
             'end_date' => $validated['end_date'] ?? null,
         ]);
+
+        if ($path) {
+            ProcessTicketAttachment::dispatch($detail);
+        }
 
         return redirect()->route('tickets.show', $ticket->id)->with('message', 'Ticket atualizado com sucesso!');
     }

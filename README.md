@@ -1,58 +1,292 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Sobre o Sistema
+ 
+O **ServiceHub** é uma aplicação web para gestão de ordens de serviço. Usuários autenticados podem cadastrar empresas, organizar projetos por empresa e abrir tickets por projeto. Cada ticket possui um detalhe técnico associado e suporta upload de anexos que são processados de forma assíncrona via fila.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Funcionalidades
+ 
+**Autenticação**
+- Registro e login de usuários via Laravel Breeze
+- Perfil de usuário com dados adicionais (telefone, cargo)
+**Empresas (Companies)**
+- Listar todas as empresas
+- Criar nova empresa
+- Editar empresa existente
+- Excluir empresa
+**Projetos (Projects)**
+- Listar projetos vinculados a uma empresa
+- Criar projeto associado a uma empresa
+- Editar projeto existente
+- Excluir projeto
+**Tickets**
+- Listar tickets de um projeto
+- Criar ticket com upload opcional de anexo (JSON ou texto)
+- Editar ticket existente
+- Excluir ticket
+- Cada ticket possui um `TicketDetail` com informações técnicas detalhadas
+**Processamento Assíncrono (Queue)**
+- Job que processa o anexo enviado no ticket
+- Adiciona automaticamente mais informações ao `TicketDetail`
 
-## About Laravel
+| Tecnologia | Versão |
+|---|---|
+| PHP | 8.5 |
+| Laravel | 13 |
+| Laravel Breeze | — |
+| Laravel Sail | — |
+| Inertia.js | — |
+| Vue.js | 3 |
+| MySQL | 8 |
+| Queue Driver | database |
+| Node.js | ≥ 20 |
+| Docker | ≥ 24 |
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requisitos
+ 
+- **Windows 11** com **WSL2 + Ubuntu** habilitado
+- **Docker Desktop** instalado e com integração WSL2 ativa
+- **Git** instalado no WSL
+- Portas `80`, `3306` e `6379` disponíveis na máquina
+> ⚠️ Todos os comandos abaixo devem ser executados dentro do terminal **WSL/Ubuntu**.
+ 
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+## Instalação e Configuração
+ 
+### 1. Clone o repositório
+ 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone git@github.com:seu-usuario/servicehub.git
+cd servicehub
 ```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+ 
+### 2. Instale as dependências PHP (sem precisar do PHP local)
+ 
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php85-composer:latest \
+    composer install --ignore-platform-reqs
+```
+ 
+### 3. Copie o arquivo de ambiente
+ 
+```bash
+cp .env.example .env
+```
+ 
+### 4. Configure o `.env`
+ 
+Abra o `.env` e ajuste as variáveis abaixo:
+ 
+```env
+APP_NAME=ServiceHub
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost
+ 
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=servicehub
+DB_USERNAME=sail
+DB_PASSWORD=password
+ 
+CACHE_DRIVER=redis
+QUEUE_CONNECTION=database
+ 
+REDIS_HOST=redis
+REDIS_PORT=6379
+ 
+WWWUSER=1000
+WWWGROUP=1000
+```
+ 
+---
+ 
+## Executando o Projeto
+ 
+Execute os comandos **nesta ordem** para iniciar o ambiente completo:
+ 
+### 1. Suba os containers
+ 
+```bash
+./vendor/bin/sail up -d
+```
+ 
+### 2. Gere a chave da aplicação
+ 
+```bash
+./vendor/bin/sail artisan key:generate
+```
+ 
+### 3. Execute as migrations
+ 
+```bash
+./vendor/bin/sail artisan migrate
+```
+ 
+### 4. (Opcional) Popule o banco com dados de exemplo
+ 
+```bash
+./vendor/bin/sail artisan db:seed
+```
+ 
+### 5. Instale as dependências do Node.js
+ 
+```bash
+./vendor/bin/sail npm install
+```
+ 
+### 6. Compile os assets — abra um terminal e deixe rodando
+ 
+```bash
+./vendor/bin/sail npm run dev
+```
+ 
+### 7. Inicie o worker da fila — abra outro terminal e deixe rodando
+ 
+```bash
+./vendor/bin/sail artisan queue:work
+```
+ 
+> ✅ A aplicação estará disponível em **http://localhost**
+ 
+---
+ 
+## Comandos Úteis
+ 
+### Sail
+ 
+```bash
+# Iniciar containers em background
+./vendor/bin/sail up -d
+ 
+# Parar containers
+./vendor/bin/sail down
+ 
+# Parar e remover volumes (reseta o banco)
+./vendor/bin/sail down -v
+ 
+# Ver logs dos containers
+./vendor/bin/sail logs
+ 
+# Acessar shell do container
+./vendor/bin/sail shell
+```
+ 
+### Artisan
+ 
+```bash
+# Listar todas as rotas
+./vendor/bin/sail artisan route:list
+ 
+# Criar migration
+./vendor/bin/sail artisan make:migration create_example_table
+ 
+# Executar migrations
+./vendor/bin/sail artisan migrate
+ 
+# Reverter última migration
+./vendor/bin/sail artisan migrate:rollback
+ 
+# Resetar e reexecutar todas as migrations
+./vendor/bin/sail artisan migrate:fresh
+ 
+# Resetar, reexecutar migrations e rodar seeders
+./vendor/bin/sail artisan migrate:fresh --seed
+ 
+# Limpar todos os caches
+./vendor/bin/sail artisan cache:clear
+./vendor/bin/sail artisan config:clear
+./vendor/bin/sail artisan route:clear
+./vendor/bin/sail artisan view:clear
+ 
+# Criar um novo Job
+./vendor/bin/sail artisan make:job NomeDoJob
+ 
+# Iniciar worker da fila
+./vendor/bin/sail artisan queue:work
+ 
+# Iniciar worker com número máximo de tentativas
+./vendor/bin/sail artisan queue:work --tries=3
+ 
+# Reprocessar jobs falhos
+./vendor/bin/sail artisan queue:retry all
+ 
+# Limpar jobs falhos
+./vendor/bin/sail artisan queue:flush
+```
+ 
+### NPM
+ 
+```bash
+# Instalar dependências
+./vendor/bin/sail npm install
+ 
+# Ambiente de desenvolvimento com hot reload
+./vendor/bin/sail npm run dev
+ 
+# Build para produção
+./vendor/bin/sail npm run build
+```
+ 
+### Composer
+ 
+```bash
+# Instalar dependências
+./vendor/bin/sail composer install
+ 
+# Adicionar pacote
+./vendor/bin/sail composer require nome/pacote
+ 
+# Atualizar dependências
+./vendor/bin/sail composer update
+```
+ 
+---
+ 
+## Testes
+ 
+O projeto utiliza **PHPUnit** com cobertura de modelos, serviços, jobs e rotas.
+ 
+### Executar todos os testes
+ 
+```bash
+./vendor/bin/sail artisan test
+```
+ 
+### Executar com saída detalhada
+ 
+```bash
+./vendor/bin/sail artisan test --verbose
+```
+ 
+### Executar apenas testes unitários
+ 
+```bash
+./vendor/bin/sail artisan test --testsuite=Unit
+```
+ 
+### Executar apenas testes de feature
+ 
+```bash
+./vendor/bin/sail artisan test --testsuite=Feature
+```
+ 
+### Filtrar por nome de teste
+ 
+```bash
+# Apenas testes de modelos
+./vendor/bin/sail artisan test --filter ModelTest
+ 
+# Apenas testes de jobs
+./vendor/bin/sail artisan test --filter JobTest
+```
+ 
+### Executar com relatório de cobertura
+ 
+```bash
+./vendor/bin/sail artisan test --coverage
+```

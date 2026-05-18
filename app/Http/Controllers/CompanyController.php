@@ -47,7 +47,7 @@ class CompanyController extends Controller
 
         Company::create($validated);
 
-        return redirect()->route('dashboard')->with('message', 'Empresa cadastrada com sucesso!');
+        return redirect()->route('companies.index')->with('message', 'Empresa cadastrada com sucesso!');
     }
 
     /**

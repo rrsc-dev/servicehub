@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { ArrowLeft, Edit, Trash2 } from 'lucide-vue-next';
+import { ArrowLeft, Backpack, Edit, Trash2 } from 'lucide-vue-next';
 
 const props = defineProps({
     ticket: Object,
@@ -13,6 +13,10 @@ const destroy = () => {
         router.delete(route('tickets.destroy', props.ticket.id));
     }
 };
+
+const goBack = () => {
+    window.history.back()
+}
 </script>
 
 <template>
@@ -21,9 +25,9 @@ const destroy = () => {
     <AuthenticatedLayout>
         <template #header>
             <div class="flex items-center space-x-4">
-                <Link :href="route('tickets.index')" class="text-gray-600 hover:text-gray-900">
+                <button @click="goBack" class="text-gray-600 hover:text-gray-900">
                     <ArrowLeft class="w-6 h-6" />
-                </Link>
+                </button>
                 <h2 class="text-xl font-semibold text-gray-800">Ticket #{{ ticket.id }}</h2>
             </div>
         </template>

@@ -45,14 +45,14 @@ const submit = () => {
                         
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div>
-                                <InputLabel value="Projeto Vinculado" />
+                                <InputLabel value="Projeto" />
                                 <SelectInput v-model="form.project_id" class="w-full mt-2" required>
                                     <option v-for="p in projects" :key="p.id" :value="p.id">{{ p.name }}</option>
                                 </SelectInput>
                                 <InputError :message="form.errors.project_id" class="mt-1" />
                             </div>
                             <div>
-                                <InputLabel value="Responsável Técnico" />
+                                <InputLabel value="Responsável" />
                                 <SelectInput v-model="form.user_id" class="w-full mt-2" required>
                                     <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name }}</option>
                                 </SelectInput>
@@ -93,6 +93,11 @@ const submit = () => {
                                 <TextInput type="date" class="w-full mt-2" v-model="form.end_date" />
                                 <InputError :message="form.errors.end_date" class="mt-1" />
                             </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 border rounded-md">
+                            <InputLabel value="Anexar JSON/Log (Será lido em 2º plano para extrair dados automáticos)" />
+                            <input type="file" @input="form.attachment = $event.target.files[0]" class="mt-2 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-indigo-50 file:text-indigo-700" accept=".json,.txt" />
                         </div>
 
                         <div class="flex justify-end pt-4">
