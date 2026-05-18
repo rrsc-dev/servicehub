@@ -42,34 +42,24 @@ jobs:
     needs: testes-e-build
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy no Servidor via SSH
+      - name: 🚀 Deploy no Servidor via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            # 1. Navega até a pasta do projeto
             cd /home/ubuntu/servicehub
-            
-            # 2. Atualiza o código do repositório
             git pull origin main
             
-            # 3. Sobe/Atualiza a infraestrutura Docker usando o arquivo padrão do Sail
-            docker compose up -d --build
+            # Adicionando sudo para garantir permissão total na execução
+            sudo docker compose up -d --build
             
-            # 4. Instala pacotes do Backend (usando o container correto: laravel.test)
-            docker compose exec -T laravel.test composer install --optimize-autoloader --no-dev
+            sudo docker compose exec -T laravel.test composer install --optimize-autoloader --no-dev
             
-            # 5. Instala pacotes do Frontend e compila o Vue/Inertia
-            docker compose exec -T laravel.test npm install
-            docker compose exec -T laravel.test npm run build
+            sudo docker compose exec -T laravel.test npm install
+            sudo docker compose exec -T laravel.test npm run build
             
-            # 6. Roda as migrations
-            docker compose exec -T laravel.test php artisan migrate --force
-            
-            # 7. Limpa e reconstrói o cache de performance
-            docker compose exec -T laravel.test php artisan optimize
-            
-            # 8. Reinicia os workers da fila
-            docker compose exec -T laravel.test php artisan queue:restart
+            sudo docker compose exec -T laravel.test php artisan migrate --force
+            sudo docker compose exec -T laravel.test php artisan optimize
+            sudo docker compose exec -T laravel.test php artisan queue:restart
